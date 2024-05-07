@@ -1,0 +1,517 @@
+sandbox main
+
+
+service s_begin_message {
+    [echo ===========================================================================>]
+    [echo WELCOME TO NUMBINDS ! ! !]
+}
+
+
+service s_load_config {
+    [echo .]
+    [echo ===> NumBinds: Trying to run NumBinds config named NumBinds_Config.cfg]
+    [echo ===> NumBinds: WARNING! You Must See A 'LOADING NUMBINDS CONFIG' Message Near This Line. If you did not see it, it may mean your NumBinds_Config.cfg has not been detected]
+    [exec NumBinds_Config]
+    [echo ===> NumBinds: Finished trying to execute NumBinds Config]
+}
+
+
+service s_end_message {
+    [echo Finished The NumBinds Set-Up!]
+    [echo <===========================================================================]
+}
+
+
+map {
+    boot : @s_begin_message
+    boot : @s_load_undefined_binds
+    boot : @s_load_undefined_messages
+    boot : @s_load_config
+    boot : @s_init_vars
+    boot : @s_end_message
+
+    +nb_event_numpad1 : @s_k1_held
+    +nb_event_numpad1 : @s_resolve_held
+    -nb_event_numpad1 : @s_k1_unheld
+    -nb_event_numpad1 : @s_resolve_unheld
+
+    +nb_event_numpad2 : @s_k2_held
+    +nb_event_numpad2 : @s_resolve_held
+    -nb_event_numpad2 : @s_k2_unheld
+    -nb_event_numpad2 : @s_resolve_unheld
+
+    +nb_event_numpad3 : @s_k3_held
+    +nb_event_numpad3 : @s_resolve_held
+    -nb_event_numpad3 : @s_k3_unheld
+    -nb_event_numpad3 : @s_resolve_unheld
+
+    +nb_event_numpad4 : @s_k4_held
+    +nb_event_numpad4 : @s_resolve_held
+    -nb_event_numpad4 : @s_k4_unheld
+    -nb_event_numpad4 : @s_resolve_unheld
+
+    +nb_event_numpad5 : @s_k5_held
+    +nb_event_numpad5 : @s_resolve_held
+    -nb_event_numpad5 : @s_k5_unheld
+    -nb_event_numpad5 : @s_resolve_unheld
+
+    +nb_event_numpad6 : @s_k6_held
+    +nb_event_numpad6 : @s_resolve_held
+    -nb_event_numpad6 : @s_k6_unheld
+    -nb_event_numpad6 : @s_resolve_unheld
+
+    +nb_event_numpad7 : @s_k7_held
+    +nb_event_numpad7 : @s_resolve_held
+    -nb_event_numpad7 : @s_k7_unheld
+    -nb_event_numpad7 : @s_resolve_unheld
+
+    +nb_event_numpad8 : @s_k8_held
+    +nb_event_numpad8 : @s_resolve_held
+    -nb_event_numpad8 : @s_k8_unheld
+    -nb_event_numpad8 : @s_resolve_unheld
+
+    +nb_event_numpad9 : @s_k9_held
+    +nb_event_numpad9 : @s_resolve_held
+    -nb_event_numpad9 : @s_k9_unheld
+    -nb_event_numpad9 : @s_resolve_unheld
+}
+
+service s_init_vars {
+    ENUM_HELD_NONE = 0
+    ENUM_HELD_1 = 1
+    ENUM_HELD_2 = 2
+    ENUM_HELD_3 = 3
+    ENUM_HELD_4 = 4
+    ENUM_HELD_5 = 5
+    ENUM_HELD_6 = 6
+    ENUM_HELD_7 = 7
+    ENUM_HELD_8 = 8
+    ENUM_HELD_9 = 9
+    first_held = ENUM_HELD_NONE
+    second_held = ENUM_HELD_NONE
+    held = ENUM_HELD_NONE
+    unheld = ENUM_HELD_NONE
+}
+
+service s_resolve_held {
+    if (first_held == ENUM_HELD_NONE) {
+        first_held = held
+    }
+    else {
+        second_held = held
+    }
+
+    if (first_held != ENUM_HELD_NONE) {first_held_is_not_none = 1} else {first_held_is_not_none = 0}
+    if (second_held != ENUM_HELD_NONE) {second_held_is_not_none = 1} else {second_held_is_not_none = 0}
+    fist_and_second_held_are_not_none = first_held_is_not_none & second_held_is_not_none
+
+    if (fist_and_second_held_are_not_none == 1) {
+        @s_do_keystroke
+    }
+
+}
+
+service s_resolve_unheld {
+    if (unheld == first_held) {
+        first_held = ENUM_HELD_NONE
+    }
+    elif (unheld == second_held) {
+        second_held = ENUM_HELD_NONE
+    }
+    else {
+        [echo WARNING! s_resolve_unheld UNHELD DID NOT MATCH FIRST_HELD NOR SECOND_HELD]
+        @error_report_pledge
+    }
+}
+
+service error_report_pledge {
+    [echo IF YOU ENCOUNTERED THIS ERROR PLEASE TELL THE DEVELOPER ABOUT IT SO THEY CAN FIX IT]
+}
+
+service s_k1_held {held = ENUM_HELD_1}
+service s_k1_unheld {unheld = ENUM_HELD_1}
+
+service s_k2_held {held = ENUM_HELD_2}
+service s_k2_unheld {unheld = ENUM_HELD_2}
+
+service s_k3_held {held = ENUM_HELD_3}
+service s_k3_unheld {unheld = ENUM_HELD_3}
+
+service s_k4_held {held = ENUM_HELD_4}
+service s_k4_unheld {unheld = ENUM_HELD_4}
+
+service s_k5_held {held = ENUM_HELD_5}
+service s_k5_unheld {unheld = ENUM_HELD_5}
+
+service s_k6_held {held = ENUM_HELD_6}
+service s_k6_unheld {unheld = ENUM_HELD_6}
+
+service s_k7_held {held = ENUM_HELD_7}
+service s_k7_unheld {unheld = ENUM_HELD_7}
+
+service s_k8_held {held = ENUM_HELD_8}
+service s_k8_unheld {unheld = ENUM_HELD_8}
+
+service s_k9_held {held = ENUM_HELD_9}
+service s_k9_unheld {unheld = ENUM_HELD_9}
+
+service s_jump0error {
+    [echo ERROR: JUMP0 WAS SOMEHOW TRIGGERED]
+    @error_report_pledge
+}
+
+service s_do_keystroke {
+    jump (first_held) {
+        { @s_jump0error }
+        /* 1 FIRST */ { @s_do_keystroke_resolve_1_first_held }
+        /* 2 FIRST */ { @s_do_keystroke_resolve_2_first_held }
+        /* 3 FIRST */ { @s_do_keystroke_resolve_3_first_held }
+        /* 4 FIRST */ { @s_do_keystroke_resolve_4_first_held }
+        /* 5 FIRST */ { @s_do_keystroke_resolve_5_first_held }
+        /* 6 FIRST */ { @s_do_keystroke_resolve_6_first_held }
+        /* 7 FIRST */ { @s_do_keystroke_resolve_7_first_held }
+        /* 8 FIRST */ { @s_do_keystroke_resolve_8_first_held }
+        /* 9 FIRST */ { @s_do_keystroke_resolve_9_first_held }
+    }
+}
+
+service s_do_keystroke_resolve_1_first_held {
+    jump (second_held) {
+        { @s_jump0error }
+        /* 1 SECOND */ { [numpad_bind_1_1_message; numpad_bind_1_1] }
+        /* 2 SECOND */ { [numpad_bind_1_2_message; numpad_bind_1_2] }
+        /* 3 SECOND */ { [numpad_bind_1_3_message; numpad_bind_1_3] }
+        /* 4 SECOND */ { [numpad_bind_1_4_message; numpad_bind_1_4] }
+        /* 5 SECOND */ { [numpad_bind_1_5_message; numpad_bind_1_5] }
+        /* 6 SECOND */ { [numpad_bind_1_6_message; numpad_bind_1_6] }
+        /* 7 SECOND */ { [numpad_bind_1_7_message; numpad_bind_1_7] }
+        /* 8 SECOND */ { [numpad_bind_1_8_message; numpad_bind_1_8] }
+        /* 9 SECOND */ { [numpad_bind_1_9_message; numpad_bind_1_9] }
+    }
+}
+
+service s_do_keystroke_resolve_2_first_held {
+    jump (second_held) {
+        { @s_jump0error }
+        /* 1 SECOND */ { [numpad_bind_2_1_message; numpad_bind_2_1] }
+        /* 2 SECOND */ { [numpad_bind_2_2_message; numpad_bind_2_2] }
+        /* 3 SECOND */ { [numpad_bind_2_3_message; numpad_bind_2_3] }
+        /* 4 SECOND */ { [numpad_bind_2_4_message; numpad_bind_2_4] }
+        /* 5 SECOND */ { [numpad_bind_2_5_message; numpad_bind_2_5] }
+        /* 6 SECOND */ { [numpad_bind_2_6_message; numpad_bind_2_6] }
+        /* 7 SECOND */ { [numpad_bind_2_7_message; numpad_bind_2_7] }
+        /* 8 SECOND */ { [numpad_bind_2_8_message; numpad_bind_2_8] }
+        /* 9 SECOND */ { [numpad_bind_2_9_message; numpad_bind_2_9] }
+    }
+}
+
+service s_do_keystroke_resolve_3_first_held {
+    jump (second_held) {
+        { @s_jump0error }
+        /* 1 SECOND */ { [numpad_bind_3_1_message; numpad_bind_3_1] }
+        /* 2 SECOND */ { [numpad_bind_3_2_message; numpad_bind_3_2] }
+        /* 3 SECOND */ { [numpad_bind_3_3_message; numpad_bind_3_3] }
+        /* 4 SECOND */ { [numpad_bind_3_4_message; numpad_bind_3_4] }
+        /* 5 SECOND */ { [numpad_bind_3_5_message; numpad_bind_3_5] }
+        /* 6 SECOND */ { [numpad_bind_3_6_message; numpad_bind_3_6] }
+        /* 7 SECOND */ { [numpad_bind_3_7_message; numpad_bind_3_7] }
+        /* 8 SECOND */ { [numpad_bind_3_8_message; numpad_bind_3_8] }
+        /* 9 SECOND */ { [numpad_bind_3_9_message; numpad_bind_3_9] }
+    }
+}
+
+service s_do_keystroke_resolve_4_first_held {
+    jump (second_held) {
+        { @s_jump0error }
+        /* 1 SECOND */ { [numpad_bind_4_1_message; numpad_bind_4_1] }
+        /* 2 SECOND */ { [numpad_bind_4_2_message; numpad_bind_4_2] }
+        /* 3 SECOND */ { [numpad_bind_4_3_message; numpad_bind_4_3] }
+        /* 4 SECOND */ { [numpad_bind_4_4_message; numpad_bind_4_4] }
+        /* 5 SECOND */ { [numpad_bind_4_5_message; numpad_bind_4_5] }
+        /* 6 SECOND */ { [numpad_bind_4_6_message; numpad_bind_4_6] }
+        /* 7 SECOND */ { [numpad_bind_4_7_message; numpad_bind_4_7] }
+        /* 8 SECOND */ { [numpad_bind_4_8_message; numpad_bind_4_8] }
+        /* 9 SECOND */ { [numpad_bind_4_9_message; numpad_bind_4_9] }
+    }
+}
+
+service s_do_keystroke_resolve_5_first_held {
+    jump (second_held) {
+        { @s_jump0error }
+        /* 1 SECOND */ { [numpad_bind_5_1_message; numpad_bind_5_1] }
+        /* 2 SECOND */ { [numpad_bind_5_2_message; numpad_bind_5_2] }
+        /* 3 SECOND */ { [numpad_bind_5_3_message; numpad_bind_5_3] }
+        /* 4 SECOND */ { [numpad_bind_5_4_message; numpad_bind_5_4] }
+        /* 5 SECOND */ { [numpad_bind_5_5_message; numpad_bind_5_5] }
+        /* 6 SECOND */ { [numpad_bind_5_6_message; numpad_bind_5_6] }
+        /* 7 SECOND */ { [numpad_bind_5_7_message; numpad_bind_5_7] }
+        /* 8 SECOND */ { [numpad_bind_5_8_message; numpad_bind_5_8] }
+        /* 9 SECOND */ { [numpad_bind_5_9_message; numpad_bind_5_9] }
+    }
+}
+
+service s_do_keystroke_resolve_6_first_held {
+    jump (second_held) {
+        { @s_jump0error }
+        /* 1 SECOND */ { [numpad_bind_6_1_message; numpad_bind_6_1] }
+        /* 2 SECOND */ { [numpad_bind_6_2_message; numpad_bind_6_2] }
+        /* 3 SECOND */ { [numpad_bind_6_3_message; numpad_bind_6_3] }
+        /* 4 SECOND */ { [numpad_bind_6_4_message; numpad_bind_6_4] }
+        /* 5 SECOND */ { [numpad_bind_6_5_message; numpad_bind_6_5] }
+        /* 6 SECOND */ { [numpad_bind_6_6_message; numpad_bind_6_6] }
+        /* 7 SECOND */ { [numpad_bind_6_7_message; numpad_bind_6_7] }
+        /* 8 SECOND */ { [numpad_bind_6_8_message; numpad_bind_6_8] }
+        /* 9 SECOND */ { [numpad_bind_6_9_message; numpad_bind_6_9] }
+    }
+}
+
+service s_do_keystroke_resolve_7_first_held {
+    jump (second_held) {
+        { @s_jump0error }
+        /* 1 SECOND */ { [numpad_bind_7_1_message; numpad_bind_7_1] }
+        /* 2 SECOND */ { [numpad_bind_7_2_message; numpad_bind_7_2] }
+        /* 3 SECOND */ { [numpad_bind_7_3_message; numpad_bind_7_3] }
+        /* 4 SECOND */ { [numpad_bind_7_4_message; numpad_bind_7_4] }
+        /* 5 SECOND */ { [numpad_bind_7_5_message; numpad_bind_7_5] }
+        /* 6 SECOND */ { [numpad_bind_7_6_message; numpad_bind_7_6] }
+        /* 7 SECOND */ { [numpad_bind_7_7_message; numpad_bind_7_7] }
+        /* 8 SECOND */ { [numpad_bind_7_8_message; numpad_bind_7_8] }
+        /* 9 SECOND */ { [numpad_bind_7_9_message; numpad_bind_7_9] }
+    }
+}
+
+service s_do_keystroke_resolve_8_first_held {
+    jump (second_held) {
+        { @s_jump0error }
+        /* 1 SECOND */ { [numpad_bind_8_1_message; numpad_bind_8_1] }
+        /* 2 SECOND */ { [numpad_bind_8_2_message; numpad_bind_8_2] }
+        /* 3 SECOND */ { [numpad_bind_8_3_message; numpad_bind_8_3] }
+        /* 4 SECOND */ { [numpad_bind_8_4_message; numpad_bind_8_4] }
+        /* 5 SECOND */ { [numpad_bind_8_5_message; numpad_bind_8_5] }
+        /* 6 SECOND */ { [numpad_bind_8_6_message; numpad_bind_8_6] }
+        /* 7 SECOND */ { [numpad_bind_8_7_message; numpad_bind_8_7] }
+        /* 8 SECOND */ { [numpad_bind_8_8_message; numpad_bind_8_8] }
+        /* 9 SECOND */ { [numpad_bind_8_9_message; numpad_bind_8_9] }
+    }
+}
+
+service s_do_keystroke_resolve_9_first_held {
+    jump (second_held) {
+        { @s_jump0error }
+        /* 1 SECOND */ { [numpad_bind_9_1_message; numpad_bind_9_1] }
+        /* 2 SECOND */ { [numpad_bind_9_2_message; numpad_bind_9_2] }
+        /* 3 SECOND */ { [numpad_bind_9_3_message; numpad_bind_9_3] }
+        /* 4 SECOND */ { [numpad_bind_9_4_message; numpad_bind_9_4] }
+        /* 5 SECOND */ { [numpad_bind_9_5_message; numpad_bind_9_5] }
+        /* 6 SECOND */ { [numpad_bind_9_6_message; numpad_bind_9_6] }
+        /* 7 SECOND */ { [numpad_bind_9_7_message; numpad_bind_9_7] }
+        /* 8 SECOND */ { [numpad_bind_9_8_message; numpad_bind_9_8] }
+        /* 9 SECOND */ { [numpad_bind_9_9_message; numpad_bind_9_9] }
+    }
+}
+
+
+service s_load_undefined_messages {
+
+    /* FIRST 1 */
+    [alias numpad_bind_1_1_message cecho #7A7A7A numpad_bind_1_1]
+    [alias numpad_bind_1_2_message cecho #7A7A7A numpad_bind_1_2]
+    [alias numpad_bind_1_3_message cecho #7A7A7A numpad_bind_1_3]
+    [alias numpad_bind_1_4_message cecho #7A7A7A numpad_bind_1_4]
+    [alias numpad_bind_1_5_message cecho #7A7A7A numpad_bind_1_5]
+    [alias numpad_bind_1_6_message cecho #7A7A7A numpad_bind_1_6]
+    [alias numpad_bind_1_7_message cecho #7A7A7A numpad_bind_1_7]
+    [alias numpad_bind_1_8_message cecho #7A7A7A numpad_bind_1_8]
+    [alias numpad_bind_1_9_message cecho #7A7A7A numpad_bind_1_9]
+
+    /* FIRST 2 */
+    [alias numpad_bind_2_1_message cecho #7A7A7A numpad_bind_2_1]
+    [alias numpad_bind_2_2_message cecho #7A7A7A numpad_bind_2_2]
+    [alias numpad_bind_2_3_message cecho #7A7A7A numpad_bind_2_3]
+    [alias numpad_bind_2_4_message cecho #7A7A7A numpad_bind_2_4]
+    [alias numpad_bind_2_5_message cecho #7A7A7A numpad_bind_2_5]
+    [alias numpad_bind_2_6_message cecho #7A7A7A numpad_bind_2_6]
+    [alias numpad_bind_2_7_message cecho #7A7A7A numpad_bind_2_7]
+    [alias numpad_bind_2_8_message cecho #7A7A7A numpad_bind_2_8]
+    [alias numpad_bind_2_9_message cecho #7A7A7A numpad_bind_2_9]
+
+    /* FIRST 3 */
+    [alias numpad_bind_3_1_message cecho #7A7A7A numpad_bind_3_1]
+    [alias numpad_bind_3_2_message cecho #7A7A7A numpad_bind_3_2]
+    [alias numpad_bind_3_3_message cecho #7A7A7A numpad_bind_3_3]
+    [alias numpad_bind_3_4_message cecho #7A7A7A numpad_bind_3_4]
+    [alias numpad_bind_3_5_message cecho #7A7A7A numpad_bind_3_5]
+    [alias numpad_bind_3_6_message cecho #7A7A7A numpad_bind_3_6]
+    [alias numpad_bind_3_7_message cecho #7A7A7A numpad_bind_3_7]
+    [alias numpad_bind_3_8_message cecho #7A7A7A numpad_bind_3_8]
+    [alias numpad_bind_3_9_message cecho #7A7A7A numpad_bind_3_9]
+
+    /* FIRST 4 */
+    [alias numpad_bind_4_1_message cecho #7A7A7A numpad_bind_4_1]
+    [alias numpad_bind_4_2_message cecho #7A7A7A numpad_bind_4_2]
+    [alias numpad_bind_4_3_message cecho #7A7A7A numpad_bind_4_3]
+    [alias numpad_bind_4_4_message cecho #7A7A7A numpad_bind_4_4]
+    [alias numpad_bind_4_5_message cecho #7A7A7A numpad_bind_4_5]
+    [alias numpad_bind_4_6_message cecho #7A7A7A numpad_bind_4_6]
+    [alias numpad_bind_4_7_message cecho #7A7A7A numpad_bind_4_7]
+    [alias numpad_bind_4_8_message cecho #7A7A7A numpad_bind_4_8]
+    [alias numpad_bind_4_9_message cecho #7A7A7A numpad_bind_4_9]
+
+    /* FIRST 5 */
+    [alias numpad_bind_5_1_message cecho #7A7A7A numpad_bind_5_1]
+    [alias numpad_bind_5_2_message cecho #7A7A7A numpad_bind_5_2]
+    [alias numpad_bind_5_3_message cecho #7A7A7A numpad_bind_5_3]
+    [alias numpad_bind_5_4_message cecho #7A7A7A numpad_bind_5_4]
+    [alias numpad_bind_5_5_message cecho #7A7A7A numpad_bind_5_5]
+    [alias numpad_bind_5_6_message cecho #7A7A7A numpad_bind_5_6]
+    [alias numpad_bind_5_7_message cecho #7A7A7A numpad_bind_5_7]
+    [alias numpad_bind_5_8_message cecho #7A7A7A numpad_bind_5_8]
+    [alias numpad_bind_5_9_message cecho #7A7A7A numpad_bind_5_9]
+
+    /* FIRST 6 */
+    [alias numpad_bind_6_1_message cecho #7A7A7A numpad_bind_6_1]
+    [alias numpad_bind_6_2_message cecho #7A7A7A numpad_bind_6_2]
+    [alias numpad_bind_6_3_message cecho #7A7A7A numpad_bind_6_3]
+    [alias numpad_bind_6_4_message cecho #7A7A7A numpad_bind_6_4]
+    [alias numpad_bind_6_5_message cecho #7A7A7A numpad_bind_6_5]
+    [alias numpad_bind_6_6_message cecho #7A7A7A numpad_bind_6_6]
+    [alias numpad_bind_6_7_message cecho #7A7A7A numpad_bind_6_7]
+    [alias numpad_bind_6_8_message cecho #7A7A7A numpad_bind_6_8]
+    [alias numpad_bind_6_9_message cecho #7A7A7A numpad_bind_6_9]
+
+    /* FIRST 7 */
+    [alias numpad_bind_7_1_message cecho #7A7A7A numpad_bind_7_1]
+    [alias numpad_bind_7_2_message cecho #7A7A7A numpad_bind_7_2]
+    [alias numpad_bind_7_3_message cecho #7A7A7A numpad_bind_7_3]
+    [alias numpad_bind_7_4_message cecho #7A7A7A numpad_bind_7_4]
+    [alias numpad_bind_7_5_message cecho #7A7A7A numpad_bind_7_5]
+    [alias numpad_bind_7_6_message cecho #7A7A7A numpad_bind_7_6]
+    [alias numpad_bind_7_7_message cecho #7A7A7A numpad_bind_7_7]
+    [alias numpad_bind_7_8_message cecho #7A7A7A numpad_bind_7_8]
+    [alias numpad_bind_7_9_message cecho #7A7A7A numpad_bind_7_9]
+
+    /* FIRST 8 */
+    [alias numpad_bind_8_1_message cecho #7A7A7A numpad_bind_8_1]
+    [alias numpad_bind_8_2_message cecho #7A7A7A numpad_bind_8_2]
+    [alias numpad_bind_8_3_message cecho #7A7A7A numpad_bind_8_3]
+    [alias numpad_bind_8_4_message cecho #7A7A7A numpad_bind_8_4]
+    [alias numpad_bind_8_5_message cecho #7A7A7A numpad_bind_8_5]
+    [alias numpad_bind_8_6_message cecho #7A7A7A numpad_bind_8_6]
+    [alias numpad_bind_8_7_message cecho #7A7A7A numpad_bind_8_7]
+    [alias numpad_bind_8_8_message cecho #7A7A7A numpad_bind_8_8]
+    [alias numpad_bind_8_9_message cecho #7A7A7A numpad_bind_8_9]
+
+    /* FIRST 9 */
+    [alias numpad_bind_9_1_message cecho #7A7A7A numpad_bind_9_1]
+    [alias numpad_bind_9_2_message cecho #7A7A7A numpad_bind_9_2]
+    [alias numpad_bind_9_3_message cecho #7A7A7A numpad_bind_9_3]
+    [alias numpad_bind_9_4_message cecho #7A7A7A numpad_bind_9_4]
+    [alias numpad_bind_9_5_message cecho #7A7A7A numpad_bind_9_5]
+    [alias numpad_bind_9_6_message cecho #7A7A7A numpad_bind_9_6]
+    [alias numpad_bind_9_7_message cecho #7A7A7A numpad_bind_9_7]
+    [alias numpad_bind_9_8_message cecho #7A7A7A numpad_bind_9_8]
+    [alias numpad_bind_9_9_message cecho #7A7A7A numpad_bind_9_9]
+}
+
+
+service s_load_undefined_binds {
+
+    /* FIRST 1 */
+    [alias numpad_bind_1_1 cecho IMPOSSIBLE NUMPAD COMBINATION numpad_bind_1_1]
+    [alias numpad_bind_1_2 cecho Undefined Numpad Combination numpad_bind_1_2]
+    [alias numpad_bind_1_3 cecho Undefined Numpad Combination numpad_bind_1_3]
+    [alias numpad_bind_1_4 cecho Undefined Numpad Combination numpad_bind_1_4]
+    [alias numpad_bind_1_5 cecho Undefined Numpad Combination numpad_bind_1_5]
+    [alias numpad_bind_1_6 cecho Undefined Numpad Combination numpad_bind_1_6]
+    [alias numpad_bind_1_7 cecho Undefined Numpad Combination numpad_bind_1_7]
+    [alias numpad_bind_1_8 cecho Undefined Numpad Combination numpad_bind_1_8]
+    [alias numpad_bind_1_9 cecho Undefined Numpad Combination numpad_bind_1_9]
+
+    /* FIRST 2 */
+    [alias numpad_bind_2_1 cecho Undefined Numpad Combination numpad_bind_2_1]
+    [alias numpad_bind_2_2 cecho IMPOSSIBLE NUMPAD COMBINATION numpad_bind_2_2]
+    [alias numpad_bind_2_3 cecho Undefined Numpad Combination numpad_bind_2_3]
+    [alias numpad_bind_2_4 cecho Undefined Numpad Combination numpad_bind_2_4]
+    [alias numpad_bind_2_5 cecho Undefined Numpad Combination numpad_bind_2_5]
+    [alias numpad_bind_2_6 cecho Undefined Numpad Combination numpad_bind_2_6]
+    [alias numpad_bind_2_7 cecho Undefined Numpad Combination numpad_bind_2_7]
+    [alias numpad_bind_2_8 cecho Undefined Numpad Combination numpad_bind_2_8]
+    [alias numpad_bind_2_9 cecho Undefined Numpad Combination numpad_bind_2_9]
+
+    /* FIRST 3 */
+    [alias numpad_bind_3_1 cecho Undefined Numpad Combination numpad_bind_3_1]
+    [alias numpad_bind_3_2 cecho Undefined Numpad Combination numpad_bind_3_2]
+    [alias numpad_bind_3_3 cecho IMPOSSIBLE NUMPAD COMBINATION numpad_bind_3_3]
+    [alias numpad_bind_3_4 cecho Undefined Numpad Combination numpad_bind_3_4]
+    [alias numpad_bind_3_5 cecho Undefined Numpad Combination numpad_bind_3_5]
+    [alias numpad_bind_3_6 cecho Undefined Numpad Combination numpad_bind_3_6]
+    [alias numpad_bind_3_7 cecho Undefined Numpad Combination numpad_bind_3_7]
+    [alias numpad_bind_3_8 cecho Undefined Numpad Combination numpad_bind_3_8]
+    [alias numpad_bind_3_9 cecho Undefined Numpad Combination numpad_bind_3_9]
+
+    /* FIRST 4 */
+    [alias numpad_bind_4_1 cecho Undefined Numpad Combination numpad_bind_4_1]
+    [alias numpad_bind_4_2 cecho Undefined Numpad Combination numpad_bind_4_2]
+    [alias numpad_bind_4_3 cecho Undefined Numpad Combination numpad_bind_4_3]
+    [alias numpad_bind_4_4 cecho IMPOSSIBLE NUMPAD COMBINATION numpad_bind_4_4]
+    [alias numpad_bind_4_5 cecho Undefined Numpad Combination numpad_bind_4_5]
+    [alias numpad_bind_4_6 cecho Undefined Numpad Combination numpad_bind_4_6]
+    [alias numpad_bind_4_7 cecho Undefined Numpad Combination numpad_bind_4_7]
+    [alias numpad_bind_4_8 cecho Undefined Numpad Combination numpad_bind_4_8]
+    [alias numpad_bind_4_9 cecho Undefined Numpad Combination numpad_bind_4_9]
+
+    /* FIRST 5 */
+    [alias numpad_bind_5_1 cecho Undefined Numpad Combination numpad_bind_5_1]
+    [alias numpad_bind_5_2 cecho Undefined Numpad Combination numpad_bind_5_2]
+    [alias numpad_bind_5_3 cecho Undefined Numpad Combination numpad_bind_5_3]
+    [alias numpad_bind_5_4 cecho Undefined Numpad Combination numpad_bind_5_4]
+    [alias numpad_bind_5_5 cecho IMPOSSIBLE NUMPAD COMBINATION numpad_bind_5_5]
+    [alias numpad_bind_5_6 cecho Undefined Numpad Combination numpad_bind_5_6]
+    [alias numpad_bind_5_7 cecho Undefined Numpad Combination numpad_bind_5_7]
+    [alias numpad_bind_5_8 cecho Undefined Numpad Combination numpad_bind_5_8]
+    [alias numpad_bind_5_9 cecho Undefined Numpad Combination numpad_bind_5_9]
+
+    /* FIRST 6 */
+    [alias numpad_bind_6_1 cecho Undefined Numpad Combination numpad_bind_6_1]
+    [alias numpad_bind_6_2 cecho Undefined Numpad Combination numpad_bind_6_2]
+    [alias numpad_bind_6_3 cecho Undefined Numpad Combination numpad_bind_6_3]
+    [alias numpad_bind_6_4 cecho Undefined Numpad Combination numpad_bind_6_4]
+    [alias numpad_bind_6_5 cecho Undefined Numpad Combination numpad_bind_6_5]
+    [alias numpad_bind_6_6 cecho IMPOSSIBLE NUMPAD COMBINATION numpad_bind_6_6]
+    [alias numpad_bind_6_7 cecho Undefined Numpad Combination numpad_bind_6_7]
+    [alias numpad_bind_6_8 cecho Undefined Numpad Combination numpad_bind_6_8]
+    [alias numpad_bind_6_9 cecho Undefined Numpad Combination numpad_bind_6_9]
+
+    /* FIRST 7 */
+    [alias numpad_bind_7_1 cecho Undefined Numpad Combination numpad_bind_7_1]
+    [alias numpad_bind_7_2 cecho Undefined Numpad Combination numpad_bind_7_2]
+    [alias numpad_bind_7_3 cecho Undefined Numpad Combination numpad_bind_7_3]
+    [alias numpad_bind_7_4 cecho Undefined Numpad Combination numpad_bind_7_4]
+    [alias numpad_bind_7_5 cecho Undefined Numpad Combination numpad_bind_7_5]
+    [alias numpad_bind_7_6 cecho Undefined Numpad Combination numpad_bind_7_6]
+    [alias numpad_bind_7_7 cecho IMPOSSIBLE NUMPAD COMBINATION numpad_bind_7_7]
+    [alias numpad_bind_7_8 cecho Undefined Numpad Combination numpad_bind_7_8]
+    [alias numpad_bind_7_9 cecho Undefined Numpad Combination numpad_bind_7_9]
+
+    /* FIRST 8 */
+    [alias numpad_bind_8_1 cecho Undefined Numpad Combination numpad_bind_8_1]
+    [alias numpad_bind_8_2 cecho Undefined Numpad Combination numpad_bind_8_2]
+    [alias numpad_bind_8_3 cecho Undefined Numpad Combination numpad_bind_8_3]
+    [alias numpad_bind_8_4 cecho Undefined Numpad Combination numpad_bind_8_4]
+    [alias numpad_bind_8_5 cecho Undefined Numpad Combination numpad_bind_8_5]
+    [alias numpad_bind_8_6 cecho Undefined Numpad Combination numpad_bind_8_6]
+    [alias numpad_bind_8_7 cecho Undefined Numpad Combination numpad_bind_8_7]
+    [alias numpad_bind_8_8 cecho IMPOSSIBLE NUMPAD COMBINATION numpad_bind_8_8]
+    [alias numpad_bind_8_9 cecho Undefined Numpad Combination numpad_bind_8_9]
+
+    /* FIRST 9 */
+    [alias numpad_bind_9_1 cecho Undefined Numpad Combination numpad_bind_9_1]
+    [alias numpad_bind_9_2 cecho Undefined Numpad Combination numpad_bind_9_2]
+    [alias numpad_bind_9_3 cecho Undefined Numpad Combination numpad_bind_9_3]
+    [alias numpad_bind_9_4 cecho Undefined Numpad Combination numpad_bind_9_4]
+    [alias numpad_bind_9_5 cecho Undefined Numpad Combination numpad_bind_9_5]
+    [alias numpad_bind_9_6 cecho Undefined Numpad Combination numpad_bind_9_6]
+    [alias numpad_bind_9_7 cecho Undefined Numpad Combination numpad_bind_9_7]
+    [alias numpad_bind_9_8 cecho Undefined Numpad Combination numpad_bind_9_8]
+    [alias numpad_bind_9_9 cecho IMPOSSIBLE NUMPAD COMBINATION numpad_bind_9_9]
+}

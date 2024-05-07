@@ -1,0 +1,742 @@
+sandbox main
+
+
+map {
+    boot : @s_initialize_variables
+    boot : @s_initialize_action_aliases
+
+    kh_event_keep_holding : @s_keep_holding
+
+
+    +kh_event_moveforward : @s_moveforward_down
+    +kh_event_moveforward : @s_moveforward_resolve
+    -kh_event_moveforward : @s_moveforward_up
+    -kh_event_moveforward : @s_moveforward_resolve
+
+    +kh_event_moveleft : @s_moveleft_down
+    +kh_event_moveleft : @s_moveleft_resolve
+    -kh_event_moveleft : @s_moveleft_up
+    -kh_event_moveleft : @s_moveleft_resolve
+
+    +kh_event_moveback : @s_moveback_down
+    +kh_event_moveback : @s_moveback_resolve
+    -kh_event_moveback : @s_moveback_up
+    -kh_event_moveback : @s_moveback_resolve
+
+    +kh_event_moveright : @s_moveright_down
+    +kh_event_moveright : @s_moveright_resolve
+    -kh_event_moveright : @s_moveright_up
+    -kh_event_moveright : @s_moveright_resolve
+
+
+    +kh_event_lookup : @s_lookup_down
+    +kh_event_lookup : @s_lookup_resolve
+    -kh_event_lookup : @s_lookup_up
+    -kh_event_lookup : @s_lookup_resolve
+
+    +kh_event_lookleft : @s_lookleft_down
+    +kh_event_lookleft : @s_lookleft_resolve
+    -kh_event_lookleft : @s_lookleft_up
+    -kh_event_lookleft : @s_lookleft_resolve
+
+    +kh_event_lookdown : @s_lookdown_down
+    +kh_event_lookdown : @s_lookdown_resolve
+    -kh_event_lookdown : @s_lookdown_up
+    -kh_event_lookdown : @s_lookdown_resolve
+
+    +kh_event_lookright : @s_lookright_down
+    +kh_event_lookright : @s_lookright_resolve
+    -kh_event_lookright : @s_lookright_up
+    -kh_event_lookright : @s_lookright_resolve
+
+
+    +kh_event_speed : @s_speed_down
+    +kh_event_speed : @s_speed_resolve
+    -kh_event_speed : @s_speed_up
+    -kh_event_speed : @s_speed_resolve
+
+    +kh_event_jump : @s_jump_down
+    +kh_event_jump : @s_jump_resolve
+    -kh_event_jump : @s_jump_up
+    -kh_event_jump : @s_jump_resolve
+
+    +kh_event_duck : @s_duck_down
+    +kh_event_duck : @s_duck_resolve
+    -kh_event_duck : @s_duck_up
+    -kh_event_duck : @s_duck_resolve
+
+    +kh_event_walk : @s_walk_down
+    +kh_event_walk : @s_walk_resolve
+    -kh_event_walk : @s_walk_up
+    -kh_event_walk : @s_walk_resolve
+
+    +kh_event_reload : @s_reload_down
+    +kh_event_reload : @s_reload_resolve
+    -kh_event_reload : @s_reload_up
+    -kh_event_reload : @s_reload_resolve
+
+    +kh_event_zoom : @s_zoom_down
+    +kh_event_zoom : @s_zoom_resolve
+    -kh_event_zoom : @s_zoom_up
+    -kh_event_zoom : @s_zoom_resolve
+
+
+    +kh_event_attack1 : @s_attack1_down
+    +kh_event_attack1 : @s_attack1_resolve
+    -kh_event_attack1 : @s_attack1_up
+    -kh_event_attack1 : @s_attack1_resolve
+
+    +kh_event_attack2 : @s_attack2_down
+    +kh_event_attack2 : @s_attack2_resolve
+    -kh_event_attack2 : @s_attack2_up
+    -kh_event_attack2 : @s_attack2_resolve
+}
+
+
+service s_initialize_action_aliases {
+    [alias +kh_moveforward +forward]
+    [alias -kh_moveforward -forward]
+
+    [alias +kh_moveleft +moveleft]
+    [alias -kh_moveleft -moveleft]
+
+    [alias +kh_moveback +back]
+    [alias -kh_moveback -back]
+
+    [alias +kh_moveright +moveright]
+    [alias -kh_moveright -moveright]
+
+
+    [alias +kh_lookup +lookup]
+    [alias -kh_lookup -lookup]
+
+    [alias +kh_lookleft +left]
+    [alias -kh_lookleft -left]
+
+    [alias +kh_lookdown +lookdown]
+    [alias -kh_lookdown -lookdown]
+
+    [alias +kh_lookright +right]
+    [alias -kh_lookright -right]
+
+
+    [alias +kh_speed +speed]
+    [alias -kh_speed -speed]
+
+    [alias +kh_jump +jump]
+    [alias -kh_jump -jump]
+
+    [alias +kh_duck +duck]
+    [alias -kh_duck -duck]
+
+    [alias +kh_walk +walk]
+    [alias -kh_walk -walk]
+
+    [alias +kh_reload +reload]
+    [alias -kh_reload -reload]
+
+    [alias +kh_zoom +zoom]
+    [alias -kh_zoom -zoom]
+
+
+    [alias +kh_attack1 +attack]
+    [alias -kh_attack1 -attack]
+
+    [alias +kh_attack2 +attack2]
+    [alias -kh_attack2 -attack2]
+}
+
+
+service s_initialize_variables {
+    moveforward_physically_pressed = 0
+    moveforward_keep_holding_triggered = 0
+
+    moveleft_physically_pressed = 0
+    moveleft_keep_holding_triggered = 0
+
+    moveback_physically_pressed = 0
+    moveback_keep_holding_triggered = 0
+
+    moveright_physically_pressed = 0
+    moveright_keep_holding_triggered = 0
+
+
+    lookup_physically_pressed = 0
+    lookup_keep_holding_triggered = 0
+
+    lookleft_physically_pressed = 0
+    lookleft_keep_holding_triggered = 0
+
+    lookdown_physically_pressed = 0
+    lookdown_keep_holding_triggered = 0
+
+    lookright_physically_pressed = 0
+    lookright_keep_holding_triggered = 0
+
+
+    speed_physically_pressed = 0
+    speed_keep_holding_triggered = 0
+
+    jump_physically_pressed = 0
+    jump_keep_holding_triggered = 0
+
+    duck_physically_pressed = 0
+    duck_keep_holding_triggered = 0
+
+    walk_physically_pressed = 0
+    walk_keep_holding_triggered = 0
+
+    reload_physically_pressed = 0
+    reload_keep_holding_triggered = 0
+
+    zoom_physically_pressed = 0
+    zoom_keep_holding_triggered = 0
+
+
+    attack1_physically_pressed = 0
+    attack1_keep_holding_triggered = 0
+
+    attack2_physically_pressed = 0
+    attack2_keep_holding_triggered = 0
+}
+
+
+/* Keep Holding Action */
+
+
+service s_keep_holding {
+    if (moveforward_physically_pressed == 1) {
+        [cecho HOLDING MOVEFORWARD]
+        [echo HOLDING MOVEFORWARD]
+        moveforward_keep_holding_triggered = 1
+    }
+
+    if (moveleft_physically_pressed == 1) {
+        [cecho HOLDING MOVELEFT]
+        [echo HOLDING MOVELEFT]
+        moveleft_keep_holding_triggered = 1
+    }
+
+    if (moveback_physically_pressed == 1) {
+        [cecho HOLDING MOVEBACK]
+        [echo HOLDING MOVEBACK]
+        moveback_keep_holding_triggered = 1
+    }
+
+    if (moveright_physically_pressed == 1) {
+        [cecho HOLDING MOVERIGHT]
+        [echo HOLDING MOVERIGHT]
+        moveright_keep_holding_triggered = 1
+    }
+
+
+    if (lookup_physically_pressed == 1) {
+        [cecho HOLDING LOOKUP]
+        [echo HOLDING LOOKUP]
+        lookup_keep_holding_triggered = 1
+    }
+
+    if (lookleft_physically_pressed == 1) {
+        [cecho HOLDING LOOKLEFT]
+        [echo HOLDING LOOKLEFT]
+        lookleft_keep_holding_triggered = 1
+    }
+
+    if (lookdown_physically_pressed == 1) {
+        [cecho HOLDING LOOKDOWN]
+        [echo HOLDING LOOKDOWN]
+        lookdown_keep_holding_triggered = 1
+    }
+
+    if (lookright_physically_pressed == 1) {
+        [cecho HOLDING LOOKRIGHT]
+        [echo HOLDING LOOKRIGHT]
+        lookright_keep_holding_triggered = 1
+    }
+
+
+    if (speed_physically_pressed == 1) {
+        [cecho HOLDING SPEED]
+        [echo HOLDING SPEED]
+        speed_keep_holding_triggered = 1
+    }
+
+    if (jump_physically_pressed == 1) {
+        [cecho HOLDING JUMP]
+        [echo HOLDING JUMP]
+        jump_keep_holding_triggered = 1
+    }
+
+    if (duck_physically_pressed == 1) {
+        [cecho HOLDING DUCK]
+        [echo HOLDING DUCK]
+        duck_keep_holding_triggered = 1
+    }
+
+    if (walk_physically_pressed == 1) {
+        [cecho HOLDING WALK]
+        [echo HOLDING WALK]
+        walk_keep_holding_triggered = 1
+    }
+
+    if (reload_physically_pressed == 1) {
+        [cecho HOLDING RELOAD]
+        [echo HOLDING RELOAD]
+        reload_keep_holding_triggered = 1
+    }
+
+    if (zoom_physically_pressed == 1) {
+        [cecho HOLDING ZOOM]
+        [echo HOLDING ZOOM]
+        zoom_keep_holding_triggered = 1
+    }
+
+
+    if (attack1_physically_pressed == 1) {
+        [cecho HOLDING ATTACK]
+        [echo HOLDING ATTACK]
+        attack1_keep_holding_triggered = 1
+    }
+
+    if (attack2_physically_pressed == 1) {
+        [cecho HOLDING ATTACK2]
+        [echo HOLDING ATTACK2]
+        attack2_keep_holding_triggered = 1
+    }
+}
+
+
+/* Down */
+
+
+service s_moveforward_down {
+    moveforward_physically_pressed = 1
+}
+
+service s_moveleft_down {
+    moveleft_physically_pressed = 1
+}
+
+service s_moveback_down {
+    moveback_physically_pressed = 1
+}
+
+service s_moveright_down {
+    moveright_physically_pressed = 1
+}
+
+
+service s_lookup_down {
+    lookup_physically_pressed = 1
+}
+
+service s_lookleft_down {
+    lookleft_physically_pressed = 1
+}
+
+service s_lookdown_down {
+    lookdown_physically_pressed = 1
+}
+
+service s_lookright_down {
+    lookright_physically_pressed = 1
+}
+
+
+service s_speed_down {
+    speed_physically_pressed = 1
+}
+
+service s_jump_down {
+    jump_physically_pressed = 1
+}
+
+service s_duck_down {
+    duck_physically_pressed = 1
+}
+
+service s_walk_down {
+    walk_physically_pressed = 1
+}
+
+service s_reload_down {
+    reload_physically_pressed = 1
+}
+
+service s_zoom_down {
+    zoom_physically_pressed = 1
+}
+
+
+service s_attack1_down {
+    attack1_physically_pressed = 1
+}
+
+service s_attack2_down {
+    attack2_physically_pressed = 1
+}
+
+
+/* Up */
+
+
+service s_moveforward_up {
+    moveforward_physically_pressed = 0
+}
+
+service s_moveleft_up {
+    moveleft_physically_pressed = 0
+}
+
+service s_moveback_up {
+    moveback_physically_pressed = 0
+}
+
+service s_moveright_up {
+    moveright_physically_pressed = 0
+}
+
+
+service s_lookup_up {
+   lookup_physically_pressed = 0
+}
+
+service s_lookleft_up {
+    lookleft_physically_pressed = 0
+}
+
+service s_lookdown_up {
+    lookdown_physically_pressed = 0
+}
+
+service s_lookright_up {
+    lookright_physically_pressed = 0
+}
+
+
+service s_speed_up {
+    speed_physically_pressed = 0
+}
+
+service s_jump_up {
+    jump_physically_pressed = 0
+}
+
+service s_duck_up {
+    duck_physically_pressed = 0
+}
+
+service s_walk_up {
+    walk_physically_pressed = 0
+}
+
+service s_reload_up {
+    reload_physically_pressed = 0
+}
+
+service s_zoom_up {
+    zoom_physically_pressed = 0
+}
+
+
+service s_attack1_up {
+    attack1_physically_pressed = 0
+}
+
+service s_attack2_up {
+    attack2_physically_pressed = 0
+}
+
+
+/* Resolving */
+
+
+service s_moveforward_resolve {
+    /* Pressed */
+    if (moveforward_physically_pressed == 1) {
+        if (moveforward_keep_holding_triggered == 1) {
+            moveforward_keep_holding_triggered = 0
+        } else {
+            [+kh_moveforward]
+        }
+
+    /* Unpressed */
+    } else {
+        if (moveforward_keep_holding_triggered == 0) {
+            [-kh_moveforward]
+        }
+    }
+}
+
+
+service s_moveleft_resolve {
+    /* Pressed */
+    if (moveleft_physically_pressed == 1) {
+        if (moveleft_keep_holding_triggered == 1) {
+            moveleft_keep_holding_triggered = 0
+        } else {
+            [+kh_moveleft]
+        }
+
+    /* Unpressed */
+    } else {
+        if (moveleft_keep_holding_triggered == 0) {
+            [-kh_moveleft]
+        }
+    }
+}
+
+
+service s_moveback_resolve {
+    /* Pressed */
+    if (moveback_physically_pressed == 1) {
+        if (moveback_keep_holding_triggered == 1) {
+            moveback_keep_holding_triggered = 0
+        } else {
+            [+kh_moveback]
+        }
+
+    /* Unpressed */
+    } else {
+        if (moveback_keep_holding_triggered == 0) {
+            [-kh_moveback]
+        }
+    }
+}
+
+
+service s_moveright_resolve {
+    /* Pressed */
+    if (moveright_physically_pressed == 1) {
+        if (moveright_keep_holding_triggered == 1) {
+            moveright_keep_holding_triggered = 0
+        } else {
+            [+kh_moveright]
+        }
+
+    /* Unpressed */
+    } else {
+        if (moveright_keep_holding_triggered == 0) {
+            [-kh_moveright]
+        }
+    }
+}
+
+
+
+service s_lookup_resolve {
+    /* Pressed */
+    if (lookup_physically_pressed == 1) {
+        if (lookup_keep_holding_triggered == 1) {
+            lookup_keep_holding_triggered = 0
+        } else {
+            [+kh_lookup]
+        }
+
+    /* Unpressed */
+    } else {
+        if (lookup_keep_holding_triggered == 0) {
+            [-kh_lookup]
+        }
+    }
+}
+
+
+service s_lookleft_resolve {
+    /* Pressed */
+    if (lookleft_physically_pressed == 1) {
+        if (lookleft_keep_holding_triggered == 1) {
+            lookleft_keep_holding_triggered = 0
+        } else {
+            [+kh_lookleft]
+        }
+
+    /* Unpressed */
+    } else {
+        if (lookleft_keep_holding_triggered == 0) {
+            [-kh_lookleft]
+        }
+    }
+}
+
+
+service s_lookdown_resolve {
+    /* Pressed */
+    if (lookdown_physically_pressed == 1) {
+        if (lookdown_keep_holding_triggered == 1) {
+            lookdown_keep_holding_triggered = 0
+        } else {
+            [+kh_lookdown]
+        }
+
+    /* Unpressed */
+    } else {
+        if (lookdown_keep_holding_triggered == 0) {
+            [-kh_lookdown]
+        }
+    }
+}
+
+
+service s_lookright_resolve {
+    /* Pressed */
+    if (lookright_physically_pressed == 1) {
+        if (lookright_keep_holding_triggered == 1) {
+            lookright_keep_holding_triggered = 0
+        } else {
+            [+kh_lookright]
+        }
+
+    /* Unpressed */
+    } else {
+        if (lookright_keep_holding_triggered == 0) {
+            [-kh_lookright]
+        }
+    }
+}
+
+
+
+service s_speed_resolve {
+    /* Pressed */
+    if (speed_physically_pressed == 1) {
+        if (speed_keep_holding_triggered == 1) {
+            speed_keep_holding_triggered = 0
+        } else {
+            [+kh_speed]
+        }
+
+    /* Unpressed */
+    } else {
+        if (speed_keep_holding_triggered == 0) {
+            [-kh_speed]
+        }
+    }
+}
+
+
+service s_jump_resolve {
+    /* Pressed */
+    if (jump_physically_pressed == 1) {
+        if (jump_keep_holding_triggered == 1) {
+            jump_keep_holding_triggered = 0
+        } else {
+            [+kh_jump]
+        }
+
+    /* Unpressed */
+    } else {
+        if (jump_keep_holding_triggered == 0) {
+            [-kh_jump]
+        }
+    }
+}
+
+
+service s_duck_resolve {
+    /* Pressed */
+    if (duck_physically_pressed == 1) {
+        if (duck_keep_holding_triggered == 1) {
+            duck_keep_holding_triggered = 0
+        } else {
+            [+kh_duck]
+        }
+
+    /* Unpressed */
+    } else {
+        if (duck_keep_holding_triggered == 0) {
+            [-kh_duck]
+        }
+    }
+}
+
+
+service s_walk_resolve {
+    /* Pressed */
+    if (walk_physically_pressed == 1) {
+        if (walk_keep_holding_triggered == 1) {
+            walk_keep_holding_triggered = 0
+        } else {
+            [+kh_walk]
+        }
+
+    /* Unpressed */
+    } else {
+        if (walk_keep_holding_triggered == 0) {
+            [-kh_walk]
+        }
+    }
+}
+
+
+service s_reload_resolve {
+    /* Pressed */
+    if (reload_physically_pressed == 1) {
+        if (reload_keep_holding_triggered == 1) {
+            reload_keep_holding_triggered = 0
+        } else {
+            [+kh_reload]
+        }
+
+    /* Unpressed */
+    } else {
+        if (reload_keep_holding_triggered == 0) {
+            [-kh_reload]
+        }
+    }
+}
+
+
+service s_zoom_resolve {
+    /* Pressed */
+    if (zoom_physically_pressed == 1) {
+        if (zoom_keep_holding_triggered == 1) {
+            zoom_keep_holding_triggered = 0
+        } else {
+            [+kh_zoom]
+        }
+
+    /* Unpressed */
+    } else {
+        if (zoom_keep_holding_triggered == 0) {
+            [-kh_zoom]
+        }
+    }
+}
+
+
+
+service s_attack1_resolve {
+    /* Pressed */
+    if (attack1_physically_pressed == 1) {
+        if (attack1_keep_holding_triggered == 1) {
+            attack1_keep_holding_triggered = 0
+        } else {
+            [+kh_attack1]
+        }
+
+    /* Unpressed */
+    } else {
+        if (attack1_keep_holding_triggered == 0) {
+            [-kh_attack1]
+        }
+    }
+}
+
+
+service s_attack2_resolve {
+    /* Pressed */
+    if (attack2_physically_pressed == 1) {
+        if (attack2_keep_holding_triggered == 1) {
+            attack2_keep_holding_triggered = 0
+        } else {
+            [+kh_attack2]
+        }
+
+    /* Unpressed */
+    } else {
+        if (attack2_keep_holding_triggered == 0) {
+            [-kh_attack2]
+        }
+    }
+}
